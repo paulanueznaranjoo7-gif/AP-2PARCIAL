@@ -1,0 +1,36 @@
+def ladron(n, valores, dp):
+
+    # 1. Caso base
+    if n <= 0:
+        return 0  # No quedan casas, beneficio 0
+
+    # 2. Comprobar si ya está calculado
+    if dp[n] != -1:
+        return dp[n]
+    
+    #aqui no preguntamos si el bemeficio es mejor que la capacidad porque no hay cota como el 2D
+
+    # 3. Relación de recurrencia
+
+    # NO ROBAR la casa actual
+    no_robar = ladron(n - 1, valores, dp)
+
+    # ROBAR la casa actual
+    robar = valores[n - 1] + ladron(n - 2, valores, dp)
+
+    # Guardamos el máximo beneficio
+    dp[n] = max(robar, no_robar)
+
+    # 4. Devolver el resultado
+    return dp[n]
+
+
+# Datos del ejercicio
+valores = [3, 10, 3, 1, 2]
+n = len(valores)
+
+# Creamos la lista de memoria 1D
+dp = [-1] * (n + 1)
+
+# Llamada inicial
+print(ladron(n, valores, dp))
