@@ -1,0 +1,103 @@
+
+def monedas(n, c, valores, dp):
+
+    # dp[n][c] = num combinaciones calculadas
+
+    # 1. CASOS BASE
+
+    # ERROR ANTERIOR:
+    # if n == 0:
+    #     return 0
+    # if c == 0:
+    #     return 1
+
+    # CORRECCIÓN: primero comprobamos c == 0.
+    # Si n == 0 y c == 0 a la vez, hemos conseguido
+    # formar la cantidad exacta y debemos contarla.
+
+    if c == 0:
+        return 1  # hemos conseguido formar exactamente la cantidad que queríamos
+
+    if n == 0:
+        return 0  # si no hay monedas y todavía nos falta dinero
+
+
+    # 2. Comprobar si ya está calculado
+
+    if dp[n][c] != -1:
+        return dp[n][c]
+
+    # -1 significa que todavía NO hemos calculado
+    # ese subproblema.
+    # Si hay otro número, devolvemos el resultado
+    # guardado y evitamos repetir las llamadas.
+
+
+    # 3. Relación de recurrencia
+
+    # ERROR ANTERIOR:
+    # if valores[n-1] > cantidad:
+
+    # CORRECCIÓN:
+    # Utilizamos c y no cantidad.
+    # cantidad es el objetivo inicial (5 euros).
+    # c es lo que todavía nos falta por formar.
+    # Tenemos que comprobar si la moneda actual
+    # supera la cantidad que nos queda.
+
+    if valores[n - 1] > c:
+
+        # Si la moneda es mayor que lo que nos falta,
+        # no podemos cogerla.
+        # Pasamos a considerar un tipo menos de moneda.
+
+        dp[n][c] = monedas(n - 1, c, valores, dp)
+
+
+    # 4. Guardar y devolver el resultado
+
+    else:
+
+        # NO COGER:
+        # Reducimos n porque descartamos ese tipo
+        # de moneda.
+        # c no cambia porque no hemos cogido nada.
+
+        no_coger = monedas(n - 1, c, valores, dp)
+
+        # COGER:
+        # Mantenemos n porque podemos utilizar
+        # el mismo tipo de moneda varias veces.
+        # Restamos su valor a la cantidad pendiente.
+
+        coger = monedas(
+            n,
+            c - valores[n - 1],
+            valores,
+            dp
+        )
+
+        # Sumamos coger + no_coger porque cada
+        # llamada recursiva devuelve un número
+        # de combinaciones posibles, y queremos
+        # contar todas.
+
+        dp[n][c] = no_coger + coger
+
+    # Devolvemos el número de combinaciones
+    # que hemos guardado para este subproblema.
+
+    return dp[n][c]
+
+
+valores = [1, 2, 3]
+cantidad = 5
+n = len(valores)
+
+# Creamos una matriz con n+1 filas y cantidad+1
+# columnas, inicialmente rellena de -1.
+
+dp = [[-1] * (cantidad + 1) for _ in range(n + 1)]
+
+print(monedas(n, cantidad, valores, dp))
+
