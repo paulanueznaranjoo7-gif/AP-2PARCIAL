@@ -1,0 +1,32 @@
+def robot(i, j, dp):
+
+    # 1. Caso base: llegamos al origen
+    if i == 0 and j == 0:
+        return 1
+
+    # 2. Nos salimos de la cuadrícula
+    if (i >= filas or i < 0) or (j >= columnas or j < 0):
+        return 0
+
+    # 3. Comprobamos si ya está calculado
+    if dp[i][j] != -1:
+        return dp[i][j]
+
+    # 4. Relación de recurrencia
+    else:
+        desde_arriba = robot(i - 1, j, dp)
+
+        desde_izquierda = robot(i, j - 1, dp)
+
+        dp[i][j] = desde_arriba + desde_izquierda
+
+    # 5. Devolvemos el resultado
+    return dp[i][j]
+
+
+filas = 3
+columnas = 4
+
+dp = [[-1] * columnas for _ in range(filas)]
+
+print(robot(filas - 1, columnas - 1, dp))
