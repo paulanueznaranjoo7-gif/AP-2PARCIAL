@@ -1,0 +1,36 @@
+
+def cortar_barra(n, precios, dp):
+
+    # 1. Caso base
+    if n == 0:
+        return 0
+
+    # 2. Comprobar si ya está calculado
+    if dp[n] != -1:
+        return dp[n]
+
+    # 3. Relación de recurrencia
+    else:
+        mejor = 0
+
+        for longitud in range(1, n + 1):
+
+            # Calcular el dinero del primer trozo
+            # y sumar lo obtenido con la barra restante
+            beneficio = precios[longitud - 1] + cortar_barra(n - longitud, precios, dp)
+
+            # Quedarnos con el mayor beneficio
+            mejor = max(mejor, beneficio)
+
+        dp[n] = mejor
+
+    # 4. Guardar y devolver resultado
+    return dp[n]
+
+
+precios = [2, 5, 7, 8, 10]
+n = 5
+
+dp = [-1] * (n + 1)
+
+print(cortar_barra(n, precios, dp))
