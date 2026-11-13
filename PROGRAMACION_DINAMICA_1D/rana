@@ -1,0 +1,59 @@
+
+def rana(i, alturas, dp):
+
+    # 1. Casos base
+
+    # ANTES: return 1
+    # CORRECCIÓN: return 0
+    # Porque calculamos el coste mínimo, no el número de caminos.
+    # En la primera piedra todavía no hemos gastado energía.
+    if i == 0:
+        return 0
+
+    # Si estamos en la piedra 1, solo podemos
+    # llegar desde la piedra 0.
+    if i == 1:
+        return abs(alturas[1] - alturas[0])
+
+    # 2. Comprobar si ya está calculado
+
+    # ANTES: dp[n]
+    # CORRECCIÓN: dp[i]
+    # Porque i indica la piedra que estamos calculando.
+    if dp[i] != -1:
+        return dp[i]
+
+    # 3. Relación de recurrencia
+    else:
+
+        # ANTES: rana(i - 1, alturas, dp)
+        # Faltaba sumar el coste del salto actual.
+        saltar_siguiente = rana(i - 1, alturas, dp) + abs(
+            alturas[i] - alturas[i - 1]
+        )
+
+        # ANTES: rana(i - 2, alturas, dp)
+        # También faltaba sumar el coste del salto.
+        saltar_2 = rana(i - 2, alturas, dp) + abs(
+            alturas[i] - alturas[i - 2]
+        )
+
+        # ANTES: dp[n] = max(...)
+        # CORRECCIÓN: dp[i] = min(...)
+        # Buscamos el menor coste, no el mayor.
+        dp[i] = min(saltar_siguiente, saltar_2)
+
+    # 4. Guardar y devolver resultado
+
+    # ANTES: return dp[n]
+    # CORRECCIÓN: return dp[i]
+    return dp[i]
+
+
+alturas = [10, 30, 20, 40, 25]
+
+n = len(alturas)
+
+dp = [-1] * n
+
+print(rana(n - 1, alturas, dp))
