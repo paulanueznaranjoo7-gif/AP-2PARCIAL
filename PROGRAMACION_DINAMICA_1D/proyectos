@@ -1,0 +1,33 @@
+
+def proyectos(n, beneficios, dp):
+
+    # 1. Caso base
+    if n <= 0: #ponemos el  simbolo menor porque puede ser igual o menor a 0
+        return 0
+
+
+    # 2. Comprobar si ya está calculado
+    if dp[n] != -1:
+        return dp[n]
+
+
+    # 3. Relación de recurrencia
+    else:
+        
+        no_realizar = proyectos(n - 1, beneficios, dp)
+        
+        realizar = beneficios[n - 1] + proyectos(n - 3, beneficios, dp)
+        
+        dp[n] = max(realizar, no_realizar)
+
+
+    # 4. Guardar y devolver el resultado
+    return dp[n]
+
+
+beneficios = [4, 7, 2, 9, 5]
+n = len(beneficios)
+
+dp = [-1] * (n + 1)
+
+print(proyectos(n, beneficios, dp))
