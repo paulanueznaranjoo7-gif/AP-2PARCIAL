@@ -1,0 +1,58 @@
+# EJERCICIO: FÁBRICA DE JUGUETES
+#he de adivinar si es 2D o 1D
+
+# 1. Define tu función
+def maquina_juguetes(n, horas, beneficios, tiempo_restante, dp):
+
+# 2. Casos base
+    if n == 0:
+        return 0 #no quedan maquinas por considerar
+
+
+# 3. Comprobación de memoria
+    if dp[n][tiempo_restante] != -1: #yo aquí puse previamente horas, no tiene sentido porque es una lista
+        return dp[n][tiempo_restante]
+        
+    
+    #como es 2D, comprobamos si supera la cota impuesta
+    if horas[n - 1] > tiempo_restante: # probamos con su repesctiva maquina, ya nos encargams de que en el reusltado
+        #final no pase de las 7 al empezar desde 7 e ir restand
+        dp[n][tiempo_restante] = maquina_juguetes(  #descarto porque me pasa
+        n - 1, horas, beneficios, tiempo_restante, dp
+    ) 
+
+
+# 4. Relación de recurrencia
+    
+    else:
+        
+        tomar_hora = beneficios[n - 1] + maquina_juguetes(n - 1, horas, beneficios, tiempo_restante - horas[n - 1], dp)
+        
+        no_tomar = maquina_juguetes(n - 1, horas, beneficios, tiempo_restante, dp)
+        
+        dp[n][tiempo_restante] = max(tomar_hora, no_tomar)
+
+    
+# 5. Guardar y devolver resultado
+    return dp[n][tiempo_restante]
+
+
+# 6. Crear dp y llamar a la función
+
+# MAIN
+
+horas = [2, 3, 4, 5]
+beneficios = [5, 8, 9, 12]
+
+tiempo_maximo = 7
+n = len(horas)
+
+filas = 5
+columnas = 8
+
+# Crea aquí la estructura dp que necesites
+dp = [[-1] * columnas for _ in range(filas)] #2D requiere matriz
+# Llamada a tu función recursiva
+resultado = maquina_juguetes(n, horas, beneficios, tiempo_maximo, dp)
+
+print(resultado)
