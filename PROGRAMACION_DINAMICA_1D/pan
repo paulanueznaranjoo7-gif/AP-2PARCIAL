@@ -13,7 +13,7 @@ def cortar_barra(n, precios, dp):
     else:
         mejor = 0
 
-        for longitud in range(1, n + 1):
+        for longitud in range(1, n + 1): #aqui utilizamos un for porque probamos esas 5 probabilidades
 
             # Calcular el dinero del primer trozo
             # y sumar lo obtenido con la barra restante
