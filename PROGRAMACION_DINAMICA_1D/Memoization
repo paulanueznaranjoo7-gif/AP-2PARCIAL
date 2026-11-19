@@ -1,0 +1,34 @@
+def solve_memoization(n):
+    mem = {}
+
+    def t(n):
+        # 1. Casos base
+        
+        if n == 0:
+            return 1 #n == 0 devuelvo 1 porque ya tengo una solucion
+        if n < 0:
+            return 0
+        
+        # 2. Comprobar si ya está calculado
+        if n in mem:
+            return mem[n]
+
+        # 3. Recurrencia
+        operacion_a = t(n - 1)
+        
+        operacion_b = t(n - 2)
+        
+
+        # 4. Guardar el resultado en mem
+        mem[n] = operacion_b + operacion_a
+        return mem[n]
+
+    resultado = t(n)
+
+    return resultado
+
+
+if __name__ == "__main__":
+    n = 6
+
+    print("Número de formas:", solve_memoization(n))
