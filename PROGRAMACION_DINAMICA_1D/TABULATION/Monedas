@@ -1,0 +1,93 @@
+def solve_tabulation(monedas):
+    table = []
+    camino = []
+
+    def fill_table():
+        # Primera fase:
+        # Calcular el máximo de monedas
+        # que podemos recoger hasta cada casilla
+
+        filas = len(monedas)
+        columnas = len(monedas[0])
+
+        # Creamos la tabla 2D
+        for i in range(filas):
+            table.append([0] * columnas)
+
+        # Metemos primera
+        table[0][0] = monedas[0][0]
+
+        for i in range(filas):
+            for j in range(columnas):
+
+                if i == 0 and j == 0:
+                    continue
+
+                if i == 0:
+                    table[i][j] = monedas[i][j] + table[i][j - 1]
+
+                elif j == 0:
+                    table[i][j] = monedas[i][j] + table[i - 1][j]
+
+                else:
+                    robar_derecha = table[i][j - 1]
+                    robar_abajo = table[i - 1][j]
+
+                    table[i][j] = monedas[i][j] + max(robar_abajo, robar_derecha)
+
+        return
+
+    def fill_camino():
+
+        # Empezamos desde el final
+
+        longitud_i = len(monedas)
+        longitud_j = len(monedas[0])
+
+        i = longitud_i - 1
+        j = longitud_j - 1
+
+        while i >= 0 and j >= 0:
+
+            camino.append([i, j])
+
+            if i == 0 and j == 0:
+                break
+
+            if i == 0:
+                j -= 1
+
+            elif j == 0:
+                i -= 1
+
+            else:
+                anterior = max(table[i][j - 1], table[i - 1][j])
+
+                if anterior == table[i][j - 1]:
+                    j -= 1
+                else:
+                    i -= 1
+
+        camino.reverse()
+
+        return camino
+
+    fill_table()
+    fill_camino()
+
+    return table[-1][-1], camino
+
+
+if __name__ == "__main__":
+
+    monedas = [
+        [3, 2, 5, 1],
+        [4, 8, 2, 6],
+        [1, 3, 9, 2],
+        [5, 2, 4, 7]
+    ]
+
+    max_monedas, camino = solve_tabulation(monedas)
+
+    print("Máximo de monedas:", max_monedas)
+    print("Camino elegido:", camino)
