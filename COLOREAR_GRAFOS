@@ -1,0 +1,81 @@
+import networkx as nx
+
+
+def solve_dsat_coloring(graph, order_nodes):
+
+    color_nodes = {}
+
+    for node in order_nodes:
+        color_nodes[node] = None
+
+    while None in color_nodes.values():
+
+        best_node = None
+        best_sat = -1
+        best_degree = float('inf')
+
+        # Buscar el mejor nodo
+        for node in order_nodes:
+
+            if color_nodes[node] is None:
+
+                colors = set()
+
+                for neighbor in graph.neighbors(node):
+                    if color_nodes[neighbor] is not None:
+                        colors.add(color_nodes[neighbor])
+
+                saturacion = len(colors)
+                degree = graph.degree[node]
+
+                # Mayor saturación y menor grado
+                if saturacion > best_sat or (
+                    saturacion == best_sat and degree < best_degree
+                ):
+                    best_node = node
+                    best_sat = saturacion
+                    best_degree = degree
+
+        # Buscar los colores utilizados por los vecinos
+        used_colors = set()
+
+        for neighbor in graph.neighbors(best_node):
+            if color_nodes[neighbor] is not None:
+                used_colors.add(color_nodes[neighbor])
+
+        # Buscar el menor color disponible
+        color = 0
+
+        while color in used_colors:
+            color += 1
+
+        # Asignar color al nodo elegido
+        color_nodes[best_node] = color
+
+    return [color_nodes[node] for node in order_nodes]
+
+
+if __name__ == "__main__":
+
+    graph = nx.Graph()
+
+    graph.add_nodes_from(["A", "B", "C", "D", "E", "F"])
+
+    graph.add_edges_from([
+        ("A", "B"),
+        ("A", "C"),
+        ("A", "D"),
+        ("B", "C"),
+        ("B", "E"),
+        ("C", "D"),
+        ("C", "F"),
+        ("D", "E"),
+        ("E", "F")
+    ])
+
+    order_nodes = ["A", "B", "C", "D", "E", "F"]
+
+    resultado = solve_dsat_coloring(graph, order_nodes)
+
+    print("Colores asignados:", resultado)
+    print("Número de colores utilizados:", len(set(resultado)))
