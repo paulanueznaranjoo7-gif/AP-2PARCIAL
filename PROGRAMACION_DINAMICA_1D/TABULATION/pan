@@ -1,0 +1,67 @@
+def solve_tabulation(precios, longitud):
+    table = [] #guarda beneficio máximo para cada longitud de barra
+    #ej: table[0] = beneficio para 0 metros
+    taken = []
+
+    def fill_table():
+
+        # Caso base: barra de longitud 0
+        table.append(0) 
+
+        # Recorremos todas las longitudes
+        for i in range(1, longitud + 1):
+
+            beneficio = 0 #beneficio para cada metro
+
+            # Probamos todos los cortes posibles
+            for j in range(1, i + 1):
+
+                cortar = precios[j - 1] + table[i - j]
+                #precios[j -1] indice de python empieza en 0
+                
+ 
+                beneficio = max(beneficio, cortar)
+
+            # Guardamos el beneficio máximo
+            table.append(beneficio)
+
+        return
+
+    def fill_taken():
+
+        # Empezamos desde la longitud total
+        i = longitud
+
+        while i > 0:
+
+            # Buscamos el corte elegido
+            for j in range(1, i + 1):
+
+                if table[i] == precios[j - 1] + table[i - j]:
+
+                    taken.append(j)
+
+                    # Restamos la longitud del fragmento
+                    i -= j
+
+                    break
+
+        return taken
+
+    fill_table()
+    fill_taken()
+
+    return table[longitud], taken
+
+
+if __name__ == "__main__":
+
+    precios = [2, 5, 7, 10, 13, 14, 17, 19]
+    longitud = 8
+
+    max_beneficio, fragmentos = solve_tabulation(
+        precios, longitud
+    )
+
+    print("Beneficio máximo:", max_beneficio)
+    print("Fragmentos elegidos:", fragmentos)
