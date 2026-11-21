@@ -1,0 +1,40 @@
+def solve_memoization(alturas):
+
+    mem = {}
+
+    def t(i):
+
+        # 1. Caso base
+        if i == 0:
+            return 0
+     
+        # 2. Comprobar si está en memoria
+        if i in mem:
+            return mem[i]
+
+        # 3. Calcular las alternativas
+        saltar_una = t(i - 1) + abs(alturas[i] - alturas[i - 1])
+
+        if i >= 2:
+            saltar_dos = t(i - 2) + abs(alturas[i] - alturas[i - 2])
+            mem[i] = min(saltar_una, saltar_dos)
+        else:
+            mem[i] = saltar_una
+        
+        # 4. Guardar en memoria
+
+        # 5. Devolver el resultado
+        return mem[i]
+
+        pass
+
+    return t(len(alturas) - 1)
+
+
+if __name__ == "__main__":
+
+    alturas = [10, 30, 20, 40, 25, 35]
+
+    resultado = solve_memoization(alturas)
+
+    print("Coste mínimo:", resultado)
