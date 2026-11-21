@@ -1,0 +1,64 @@
+def solve_tabulation(recompensas):
+
+    table = []
+    taken = []
+
+    def fill_table():
+        
+        #si no hubiera hoteles
+        table.append(0)
+        
+        #se peude coger
+        table.append(recompensas[0])
+        #se puede coger ambos
+        table.append(recompensas[0] + recompensas[1])
+        
+        
+        for i in range(3, len(recompensas) + 1):
+            
+            hospedar_doble = recompensas[i - 1] + recompensas[i - 2] + table[i - 3] #no coges el 3, si es igual a 5 si es 
+            hospedar_ultimo = recompensas[i - 1] + table[i - 2]
+            no_hospedar = table[i - 1]
+            
+            table.append(max(hospedar_ultimo, hospedar_doble, no_hospedar))
+        return table
+            
+
+    def fill_taken():
+        
+        i = len(recompensas)
+        
+        while i >= 0:
+            
+            if table[i] == table[i - 1]:
+                i -= 1
+            else:
+
+                if table[i] == recompensas[i - 1] + table[i - 2]:
+
+                    # Elegimos solo el último hotel
+                    taken.append(i)
+                    i -= 2
+
+                else:
+
+                    # Elegimos los dos últimos hoteles
+                    taken.append(i)
+                    taken.append(i - 1)
+                    i -= 3
+                    return taken
+
+    fill_table()
+    fill_taken()
+
+    return table[-1], taken
+
+
+if __name__ == "__main__":
+
+    recompensas = [5, 12, 8, 15, 6, 10]
+
+    beneficio_maximo, hoteles_elegidos = solve_tabulation(recompensas)
+
+    print("Beneficio máximo:", beneficio_maximo)
+    print("Hoteles elegidos:", hoteles_elegidos)
