@@ -1,0 +1,74 @@
+def solve_memoization(tesoros, capacidad_maxima):
+
+    mem = {}
+    taken = []
+
+    def t(i, capacidad):
+
+        # 1. Casos base
+        if capacidad == 0:
+            return 0
+        if i == 0:
+            return 0
+            
+        # 2. Comprobar memoria
+        if (i, capacidad) in mem:
+            return mem[(i, capacidad)]
+        
+        tesoro, peso, valor = tesoros[i - 1]
+
+        # 3. Calcular alternativas
+        if peso > capacidad:
+            no_tomar_tesoro = t(i - 1, capacidad)
+            mem[(i, capacidad)] = no_tomar_tesoro
+            
+        else:
+            tomar_tesoro = t(i - 1, capacidad - peso) + valor
+            no_tomar_tesoro = t(i - 1, capacidad)
+            mem[(i, capacidad)] = max(tomar_tesoro, no_tomar_tesoro)
+
+        # 5. Devolver resultado
+        return mem[(i, capacidad)]
+
+
+    def fill_taken():
+        
+        i = len(tesoros)
+        capacidad = capacidad_maxima 
+        
+        while i > 0 and capacidad > 0:
+            
+            tesoro, peso, valor = tesoros[i - 1]
+            
+            if t(i, capacidad) == t(i - 1, capacidad):
+                i -= 1
+            else:
+                taken.append(tesoro)
+                i -= 1
+                capacidad -= peso
+
+
+    max_valor = t(len(tesoros), capacidad_maxima)
+
+    fill_taken()
+
+    return max_valor, taken
+
+
+if __name__ == "__main__":
+
+    tesoros = [
+        ("A", 2, 6),
+        ("B", 3, 10),
+        ("C", 4, 12),
+        ("D", 5, 15)
+    ]
+
+    capacidad_maxima = 7
+
+    max_valor, elegidos = solve_memoization(
+        tesoros, capacidad_maxima
+    )
+
+    print("Valor máximo:", max_valor)
+    print("Tesoros elegidos:", elegidos)
