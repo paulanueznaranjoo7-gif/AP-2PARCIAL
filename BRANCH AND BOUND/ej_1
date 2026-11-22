@@ -1,0 +1,60 @@
+from node import *
+
+def solve_branch_and_bound_DFS(capacity, items, record_visiting_order=False):
+
+    alive = []
+    visiting_order = []
+    
+    best_taken = []
+    best_value = 0
+    
+    #creamos nodo raiz
+    raiz = Node(index = 0, taken = [], value = 0, room = capacity)
+    #porque el primer valor le asigno 0?
+    alive.append(raiz)
+    
+    while len(alive) > 0:
+        
+        current = alive.pop()
+        
+        if record_visiting_order:
+            visiting_order.append(current.index)
+        
+        if current.room < 0:
+            continue
+        
+        if current.estimate(items) <= best_value:
+            continue
+        
+        if len(current.taken) > 3:
+            continue
+        
+        if 2 in current.taken and 4 in current.taken:
+            continue
+        
+        if current.value > best_value:
+            best_value = current.value
+            best_taken = current.taken
+            
+        if current.index >= len(items):
+            continue
+        else:
+            item = items[current.index]
+            hijo_izq = Node(
+                index = current.index + 1,
+                taken = current.taken + [current.index + 1],
+                value = current.value + item.value,
+                room = current.room - item.weight)
+            
+            alive.append(hijo_izq)
+        
+            hijo_der = Node(
+                index = current.index + 1,
+                taken = current.taken,
+                value = current.value,
+                room = current.room)´
+        
+            alive.append(hijo_der)
+        
+        return best_value, best_taken, visiting_order
+        
