@@ -1,0 +1,72 @@
+def solve_tabulation(energia):
+
+    table = []
+    taken = []
+
+    def fill_table():
+        
+        
+        table.append(energia[0])
+
+        for i in range(1, len(energia)):
+            
+            if i == 1:
+                level = table[i - 1] + energia[i]
+                min_2level = max(energia[i - 1], energia[i])
+                table.append(min(level, min_2level))
+                
+            else:
+                level = table[i - 1] + energia[i]           
+                min_level = table[i - 2] + max(energia[i - 1], energia[i])
+                table.append(min(min_level, level))
+        
+        print(table)   
+        return table
+            
+
+    def fill_taken():
+
+        i = len(energia) - 1
+
+        while i >= 0:
+
+            if i == 0:
+                taken.append((0,))
+                break
+
+            elif i == 1:
+                if table[1] == table[0] + energia[1]:
+                    taken.append((1,))
+                    i -= 1
+                else:
+                    taken.append((0, 1))
+                    i -= 2
+
+            elif table[i] == table[i - 1] + energia[i]:
+                taken.append((i,))
+                i -= 1
+
+            else:
+                taken.append((i - 1, i))
+                i -= 2
+
+        taken.reverse()
+
+        return taken
+            
+                
+
+    fill_table()
+    fill_taken()
+
+    return table[-1], taken
+
+
+if __name__ == "__main__":
+
+    energia = [6, 3, 8, 2, 7, 4, 5]
+
+    minimo, taken = solve_tabulation(energia)
+
+    print("Energía mínima:", minimo)
+    print("Niveles completados:", taken)
