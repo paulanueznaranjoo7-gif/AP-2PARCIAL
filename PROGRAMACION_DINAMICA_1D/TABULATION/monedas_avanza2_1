@@ -1,0 +1,61 @@
+def solve_tabulation(monedas):
+
+    table = []
+    camino = []
+
+    def fill_table():
+        
+        #empieza en la 0
+        table.append(monedas[0])
+        
+        for i in range(1, len(monedas)): #aqui no hacemos len(monedas) + 1 porwur no consideramos la posibilidad de 0 objetos
+            
+            avanzar_1 = table[i - 1] + monedas[i]
+            if i >= 2:
+                avanzar_2 = table[i - 2] + monedas[i]
+                table.append(max(avanzar_2, avanzar_1))
+            else:
+                table.append(avanzar_1)
+        return table
+
+    def fill_camino():
+        
+        i = len(monedas) - 1
+        
+        while i >= 0:
+             
+            camino.append(i) #añado las que cumplen la comdicion de abajo
+           
+            if i == 0: #si llegamos a 0 eso siugnfica que rompeamos bucle porque es el primero
+                break
+            
+            if i == 1:
+                i -=1
+            
+            elif table[i] == table[i - 1] + monedas[i]:
+                i -= 1
+
+            else:
+                i -= 2
+
+        camino.reverse()
+                    
+            
+        return camino
+                
+                
+
+    fill_table()
+    fill_camino()
+
+    return table[-1], camino
+
+
+if __name__ == "__main__":
+
+    monedas = [4, 7, 2, 9, 3, 8, 5]
+
+    max_monedas, camino = solve_tabulation(monedas)
+
+    print("Máximo de monedas:", max_monedas)
+    print("Camino elegido:", camino)
