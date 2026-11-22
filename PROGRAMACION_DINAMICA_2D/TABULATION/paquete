@@ -1,0 +1,46 @@
+def solve_tabulation(capacity, pesos, beneficios):
+
+    table = []
+    taken = []
+
+    def fill_table():
+        
+        if capacity == 0:
+            return 0
+        
+        table.extend([[0] * (capacity + 1) for _ in range(len(pesos) + 1)])
+        
+        for i in range(1, len(pesos) + 1):
+            for c in range(1, capacity + 1):
+                
+                no_tomar_package = table[i - 1][c]
+                
+                if pesos[i - 1] <= c: #caapcidsd que evaluamos en cada celda
+                    
+                    tomar_package = table[i - 1][c - pesos[i - 1]] + beneficios[i - 1]
+                    
+                    table[i][c] = max(tomar_package, no_tomar_package)
+                else:
+                    table[i][c] = no_tomar_package
+        return table
+
+    def fill_taken():
+        
+        i = len(pesos)
+        c = capacity
+        
+        while i > 0:
+            
+            if table[i][c] == table[i - 1][c]:
+                i -= 1
+            else:
+                taken.append(i)
+                i -= 1
+                c -= pesos[i]
+
+    fill_table()
+    fill_taken()
+    
+    taken.reverse()
+
+    return table[-1][-1], taken
