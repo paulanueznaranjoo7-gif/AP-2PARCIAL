@@ -1,0 +1,59 @@
+def solve_memoization(items):
+
+    mem = {}
+    taken = []
+
+    def t(n):
+        print(items)
+
+        # 1. Casos base
+        if n == 0:
+            return 0
+
+        # 2. Comprobar memoria
+        if n in mem:
+            return mem[n]
+
+        # 3. Alternativa de NO robar
+        no_robar = t(n - 1)
+        # 4. Alternativa de SÍ robar
+        if n >= 3:
+            robar = t(n - 3) + items[n - 1]
+            mem[n] = max(robar, no_robar)
+        else:
+            mem[n] = items[n - 1]
+        # 5. Guardar el máximo en mem
+        return mem[n]
+
+    def fill_taken():
+
+        # Reconstruir las casas seleccionadas
+        # Numerarlas desde 1
+        
+        n = len(items)
+        
+        while n >= 0:
+            
+            if t(n - 1) == t(n):
+                n -= 1
+            else:
+                taken.append(n)
+                n -= 3
+        taken.reverse()
+        return taken
+
+    max_beneficio = t(len(items))
+
+    fill_taken()
+
+    return max_beneficio, taken
+
+
+if __name__ == "__main__":
+
+    casas = [8, 12, 5, 20, 7, 15, 9, 18]
+
+    max_beneficio, taken = solve_memoization(casas)
+
+    print("Beneficio máximo:", max_beneficio)
+    print("Casas robadas:", taken)
