@@ -34,6 +34,12 @@ def solve_memoization(items):
         
         while n >= 0:
             
+            
+            if n == 1:
+                if t(1) > 0:
+                    taken.append(1)
+                    break
+            
             if t(n - 1) == t(n):
                 n -= 1
             else:
