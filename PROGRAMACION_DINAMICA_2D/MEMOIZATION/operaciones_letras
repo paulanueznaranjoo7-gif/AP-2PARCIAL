@@ -1,0 +1,35 @@
+def solve_memoization(palabra1, palabra2):
+
+    mem = {}
+
+    def t(i, j):
+
+        # 1. Casos base:
+        #    Si una de las dos palabras está vacía
+        
+        if len(palabra1) == 0 or len(palabra2) == 0:
+            return 0
+            
+        if i == 0 or j == 0:
+            return 0
+
+        # 2. Comprobar memoria
+        if (i,j) in mem:
+            return mem[(i, j)]
+            
+        if palabra1[i - 1] == palabra2[j - 1]:
+            iguales = t(i - 1, j - 1)
+            mem[(i,j)] = iguales
+            
+        else:
+            insertar = 1 + t(i, j - 1)
+            eliminar = 1 + t(i - 1, j)
+            sustituir = 1 + t(i - 1, j - 1)
+            mem[(i, j)] = min(insertar, eliminar, sustituir)
+            
+
+        return mem[i][j]
+
+    resultado = t(len(palabra1), len(palabra2))
+
+    return resultado
