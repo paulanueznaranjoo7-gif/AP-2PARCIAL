@@ -1,0 +1,96 @@
+from node import *
+
+def solve_branch_and_bound_DFS(
+    capacity, items, record_visiting_order=False
+):
+
+    alive = []
+    visiting_order = []
+
+    best_value = 0
+    best_taken = []
+
+    # 1. Crear la raíz
+    root = Node(index = 0, taken = [], value = 0, room = capacity)
+
+    # 2. Añadir la raíz a alive
+    alive.append(root)
+
+    while len(alive) > 0:
+
+        # 3. Extraer el nodo actual
+        current = alive.pop()
+        # 4. Registrar la visita si corresponde
+        if record_visiting_order:
+            visiting_order.append(current.index)
+
+        # 5. Podar si se supera el número de empleados
+        if current.room < 0:
+            continue
+
+        # 6. Podar si hay más de 3 actividades
+        if len(current.taken) > 3:
+            continue
+
+        # 7. Podar si están seleccionadas la 1 y la 4
+        if 1 in current.taken and 4 in current.taken:
+            continue
+
+        # 8. Actualizar best_value y best_taken
+        if current.value  >  best_value:
+            best_value = current.value
+            best_taken = current.taken
+        # 9. Comprobar si quedan actividades por decidir
+        if current.index >= len(items) or current.room == 0:
+            continue
+
+        if current.estimate(items) <= best_value:
+            continue
+
+        # Si no hemos llegado al final del árbol
+        #    1) Ramificamos (branch) por la derecha (append)
+        #    2) Ramificamos (branch) por la izquierda (append)
+        if current.index < len(items):
+            
+            # Ramificación Derecha (NO tomar el ítem)
+            hijo_der = Node(
+                index=current.index + 1,
+                taken=current.taken,
+                value=current.value,
+                room=current.room
+            )
+            alive.append(hijo_der)
+            
+            # Ramificación Izquierda (SÍ tomar el ítem)
+            item_actual = items[current.index]
+            hijo_izq = Node(
+                index=current.index + 1,
+                taken=current.taken + [current.index + 1],
+                value=current.value + item_actual.value,
+                room=current.room - item_actual.weight
+            )
+            alive.append(hijo_izq)
+        
+    return best_value, best_taken, visiting_order
+
+
+from node import *
+from solve import *
+
+capacity = 9
+
+items = [
+    Item(weight=4, value=15),
+    Item(weight=2, value=8),
+    Item(weight=3, value=12),
+    Item(weight=5, value=18),
+    Item(weight=2, value=9)
+]
+
+best_value, best_taken, visiting_order = (
+    solve_branch_and_bound_DFS(capacity, items, True)
+)
+
+print("Satisfacción máxima:", best_value)
+print("Actividades seleccionadas:", best_taken)
+print("Orden de visita:", visiting_order)
