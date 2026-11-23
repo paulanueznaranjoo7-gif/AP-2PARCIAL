@@ -1,0 +1,41 @@
+def solve_memoization(monedas, objetivo):
+
+    mem = {}
+
+    def t(n, cantidad):
+
+        # 1. Casos base
+        if cantidad == 0:
+            return 0
+            
+        if n == 0:
+            return float("inf")
+            
+        # 2. Comprobar memoria
+        if (n, cantidad) in mem:
+            return mem[(n, cantidad)]
+
+                
+        no_tomar = t(n - 1, cantidad)
+                
+        if monedas[n - 1] <= cantidad:
+            tomar = t(n, cantidad - monedas[n - 1]) + 1
+            mem[(n, cantidad)] = min(tomar, no_tomar)
+        else:
+           mem[(n, cantidad)] = no_tomar
+        
+        return mem[(n, cantidad)] 
+
+    resultado = t(len(monedas), objetivo)
+
+    return resultado
+
+
+if __name__ == "__main__":
+
+    monedas = [1, 3, 4, 6]
+    objetivo = 10
+
+    minimo = solve_memoization(monedas, objetivo)
+
+    print("Número mínimo de monedas:", minimo)
